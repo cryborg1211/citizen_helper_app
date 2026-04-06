@@ -12,14 +12,14 @@ from bs4 import BeautifulSoup
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-# --- CONFIG ---
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
+# --- Logging and runtime configuration ---
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# Tăng ID lên mức mới nhất của năm 2026
+
 START_ID = 185000 
-END_ID = 140000 # Lấy đến hết năm 2019/2020 là đẹp
-WORKERS = 2 # Để thấp cho an toàn, không bị ban IP
+END_ID = 140000 
+WORKERS = 2 
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
@@ -37,7 +37,6 @@ class VBPLBackwardCrawler:
         self.session.mount("https://", HTTPAdapter(max_retries=retry))
 
     def fetch_attributes(self, item_id: int) -> dict:
-        """Quét sạch Metadata từ tab Thuộc tính."""
         url = f"https://vbpl.vn/TW/Pages/vbpq-thuoctinh.aspx?ItemID={item_id}&dvid=13"
         metadata = {}
         try:
@@ -58,7 +57,6 @@ class VBPLBackwardCrawler:
         return metadata
 
     def fetch_document(self, item_id: int) -> Optional[str]:
-        """Lấy text nội dung."""
         url = f"https://vbpl.vn/TW/Pages/vbpq-toanvan.aspx?ItemID={item_id}&dvid=13"
         try:
             resp = self.session.get(url, timeout=45)
@@ -79,12 +77,13 @@ class VBPLBackwardCrawler:
         if output_path.exists():
             return "SKIPPED"
 
-        logger.info(f"🔍 Đang kiểm tra ID: {item_id}...") # Log ngay lúc bắt đầu
+        # Record the processing start for each document ID.
+        logger.info(f"Checking ItemID {item_id}...")
         
         try:
             content = self.fetch_document(item_id)
             if not content:
-                logger.warning(f"❌ ID {item_id}: Không có nội dung (404 hoặc rỗng)")
+                logger.warning(f"ItemID {item_id}: no document content found (404 or empty body).")
                 return "EMPTY"
 
             metadata = self.fetch_attributes(item_id)
@@ -99,24 +98,23 @@ class VBPLBackwardCrawler:
             with open(output_path, 'w', encoding='utf-8') as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
             
-            logger.info(f"✅ HỐT NGON ID: {item_id}")
+            logger.info(f"Completed ItemID {item_id}.")
             return "SUCCESS"
 
         except Exception as e:
-            logger.error(f"💥 Lỗi nghiêm trọng tại ID {item_id}: {str(e)}")
+            logger.error(f"Unhandled error while processing ItemID {item_id}: {str(e)}")
             return "ERROR"
 
     def run(self):
         START_ID = 187328
         END_ID = 180000
-        STEP = 1 # Chỉnh lên 10 nếu muốn dò nhanh
+        STEP = 1 
         
-        logger.info(f"🚀 Chiến dịch TRUY QUÉT từ {START_ID} về {END_ID}")
+        logger.info(f"Starting backward crawl from ItemID {START_ID} down to {END_ID}.")
         
         for i in range(START_ID, END_ID, -STEP):
             result = self.download_one(i)
             
-            # Nếu thành công thì nghỉ ngắn, nếu rỗng thì nghỉ cực ngắn để dò tiếp
             if result == "SUCCESS":
                 time.sleep(random.uniform(1, 2))
             else:

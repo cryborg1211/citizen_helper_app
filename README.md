@@ -1,65 +1,182 @@
-# Citizen Helper - Legal AI Assistant
+# Citizen Helper
 
-A comprehensive platform for legal assistance, featuring a modern AI-powered chat interface and a robust data pipeline for Vietnamese legal documents.
+Citizen Helper is an AI-powered legal assistant for Vietnamese legal questions. It combines:
+- A `FastAPI` backend for chat inference
+- A `React + Vite` frontend chat interface
+- A legal data pipeline (crawler + cleaning/indexing scripts)
+- Cloud retrieval and generation using `Pinecone` + `Gemini`
 
-## 🚀 Project Overview
+## Project Overview
 
-This project consists of two main parts:
-1.  **Frontend**: A modern, responsive React application (Vite + Tailwind CSS).
-2.  **AI Engine**: A data pipeline for crawling, cleaning, and processing legal information.
+The system has 3 major layers:
 
----
+1. `frontend/`
+- Web client for users to send legal questions and receive AI answers.
+- Calls backend endpoint: `POST http://localhost:8000/api/chat`.
 
-## 💻 Frontend Setup (Luật Sư AI)
+2. `main.py` + `ai/ai_engine/core_engine.py`
+- `main.py` starts a FastAPI server and initializes the AI engine at startup.
+- `core_engine.py` loads embeddings, connects to Pinecone, queries relevant context, and asks Gemini to generate a response.
 
-The frontend is located in the `frontend` directory.
+3. `ai/crawler/` and `ai/ai_engine/cleaning/`
+- Crawler scripts collect legal documents from multiple sources.
+- Cleaning/indexing scripts prepare and maintain legal datasets/vector resources.
 
-### Prerequisites
-- Node.js (v18+)
-- npm or yarn
+## Tech Stack
 
-### Steps to Run
-1.  Navigate to the frontend directory:
-    ```bash
-    cd frontend
-    ```
-2.  Install dependencies:
-    ```bash
-    npm install
-    ```
-3.  Start the development server:
-    ```bash
-    npm run dev
-    ```
-4.  Open your browser and navigate to the URL shown in the terminal (usually `http://localhost:5173`).
+- Backend: `Python`, `FastAPI`, `Uvicorn`
+- AI/RAG: `LangChain`, `Pinecone`, `Google Gemini`, `HuggingFace embeddings`
+- Frontend: `React`, `Vite`, `Tailwind CSS`
 
----
+## Prerequisites
 
-## 🤖 AI Engine & Crawlers
+- Python `3.10+` (recommended: `3.11`)
+- Node.js `18+`
+- `pip` and `npm`
+- API keys:
+    - `PINECONE_API_KEY`
+    - `GOOGLE_API_KEY`
 
-The AI and data processing logic is located in the `ai` directory.
+## Setup
 
-### Structure
-- **Crawlers**: Located in `ai/crawler/`. Scripts to fetch legal data from various sources (Cong Bao, MOJ, VBPL, etc.).
-- **Data Processing**: Located in `ai/ai_engine/cleaning/`. Includes scripts for noise removal, article segmentation, and vector database indexing.
+### 1. Create and activate Python environment
 
-### How to Run Crawlers
-You can run individual crawler scripts using Python. For example:
-```bash
-python ai/crawler/vbpl_crawler.py
+Windows PowerShell:
+
+```powershell
+python -m venv env
+env\Scripts\Activate.ps1
 ```
 
----
+macOS/Linux:
 
-## 📁 Data Management & Git
+```bash
+python -m venv env
+source env/bin/activate
+```
 
-Large data files and processed datasets are excluded from Git to keep the repository lightweight.
+### 2. Install backend dependencies
 
-**Ignored Paths:**
-- `ai/ai_engine/raw/`: Original downloaded files.
-- `ai/ai_engine/cleaning/*.jsonl`: Processed datasets.
-- `ai/ai_engine/cleaning/*.joblib`: Pre-computed indices/models.
-- `ai/ai_engine/cleaning/law_vector_db_pro/`: Vector database files.
-- `ai/ai_engine/cleaning/law_data/`: Extracted data folders.
+```bash
+pip install -r requirements.txt
+```
 
-Please ensure you have the necessary data locally before running processing scripts.
+If you get a missing `dotenv` module error, install:
+
+```bash
+pip install python-dotenv
+```
+
+### 3. Create environment variables
+
+Create a `.env` file in the project root:
+
+```env
+PINECONE_API_KEY=your_pinecone_api_key
+GOOGLE_API_KEY=your_google_api_key
+```
+
+## Run the Project
+
+### 1. Start backend API
+
+From project root:
+
+```bash
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+API docs: `http://localhost:8000/docs`
+
+### 2. Start frontend
+
+In a new terminal:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open the URL shown by Vite (usually `http://localhost:5173`).
+
+## API Reference
+
+### `POST /api/chat`
+
+Request body:
+
+```json
+{
+    "message": "Tôi bị phạt giao thông trong trường hợp ..."
+}
+```
+
+Response:
+
+```json
+{
+    "response": "..."
+}
+```
+
+## Data Pipeline and Crawlers
+
+Crawler scripts are in `ai/crawler/`.
+
+Examples:
+
+```bash
+python ai/crawler/vbpl_crawler.py
+python ai/crawler/moj_crawler.py
+python ai/crawler/thuvienphapluat_crawler.py
+```
+
+Processing/indexing scripts are in `ai/ai_engine/cleaning/`.
+
+Examples:
+
+```bash
+python ai/ai_engine/cleaning/noise_cleaning.py
+python ai/ai_engine/cleaning/process_data.py
+python ai/ai_engine/cleaning/index_to_faiss.py
+```
+
+Run these scripts only when you need to refresh or rebuild the legal data resources.
+
+## Project Structure
+
+```text
+citizen_helper/
+|-- main.py
+|-- requirements.txt
+|-- ai/
+|   |-- ai_engine/
+|   |   |-- core_engine.py
+|   |   |-- cleaning/
+|   |   `-- citizen_helper_brain/
+|   |-- crawler/
+|   `-- check.py
+`-- frontend/
+        |-- src/
+        |-- package.json
+        `-- vite.config.js
+```
+
+## Troubleshooting
+
+- Backend starts but chat fails:
+    - Check `.env` keys.
+    - Ensure your Pinecone index name matches the configured value in `ai/ai_engine/core_engine.py`.
+
+- Frontend cannot call backend:
+    - Confirm backend is running on port `8000`.
+    - Confirm frontend is calling `http://localhost:8000/api/chat`.
+
+- Slow first request:
+    - Initial startup loads embedding and cloud clients; first request can be slower.
+
+## Notes
+
+- Keep secrets out of source code and use `.env` for all API keys.
+- Large generated datasets/index files should stay out of git where possible.
