@@ -1,0 +1,77 @@
+# Environment variables
+.env
+.env*
+!.env.example
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Frontend (React / Node.js)
+node_modules/
+frontend/node_modules/
+dist/
+frontend/dist/
+build/
+frontend/build/
+.next/
+out/
+.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.flakes/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# AI Data & Models (Large filenames & datasets)
+# These files are typically too large for GitHub
+ai/ai_engine/raw/
+ai/ai_engine/cleaning/
+ai/ai_engine/citizen_helper_brain/
+*.jsonl
+*.joblib
+*.pkl
+*.zip
+*.tar.gz
+*.csv
+# Vector DB storage
+**/law_vector_db_pro/
+
+# User specifically requested these (interpreted as: ignore them to keep repo clean)
+*.pdf
+*.doc
+*.docx
+doc/
+docs/
+
+# Logs
+*.log
