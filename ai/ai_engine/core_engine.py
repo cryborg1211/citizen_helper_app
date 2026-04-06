@@ -10,8 +10,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # --- CLOUD CONFIGURATION ---
-os.environ["PINECONE_API_KEY"] = os.getenv("PINECONE_API_KEY")
-os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
+#os.environ["PINECONE_API_KEY"] = os.getenv("PINECONE_API_KEY")
+#os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 INDEX_NAME = "citizen-helper"
    
 # Setup Logging
