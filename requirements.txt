@@ -1,3 +1,4 @@
+python-dotenv
 langchain-google-genai
 langchain-pinecone
 langchain-huggingface
