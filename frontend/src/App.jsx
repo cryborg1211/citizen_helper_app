@@ -19,7 +19,7 @@ export default function App() {
 
   /**
    * Handles sending a new message to the AI backend.
-   * Uses async/await to call the FastAPI endpoint on localhost:8000.
+   * Uses async/await to call the FastAPI endpoint deployed on Render.
    */
   const handleSend = useCallback(async (text, file) => {
     if (!text && !file) return;

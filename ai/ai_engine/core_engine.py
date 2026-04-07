@@ -46,6 +46,14 @@ def initialize_cloud_brain():
     Optimized for low-latency memory usage by offloading to managed services.
     """
     logging.info("Connecting to Pinecone Vector DB and Gemini API...")
+
+    # Explicit Environment Variable Validation
+    required_keys = ["HF_TOKEN", "PINECONE_API_KEY", "GOOGLE_API_KEY"]
+    missing_keys = [key for key in required_keys if not os.environ.get(key)]
+    if missing_keys:
+        error_msg = f"CRITICAL ERROR: Missing required environment variables: {', '.join(missing_keys)}. Please check your Render configuration."
+        logging.error(error_msg)
+        raise ValueError(error_msg)
     
     # 1. Initialize Embeddings (runs on CPU)
     embeddings = HuggingFaceEndpointEmbeddings(

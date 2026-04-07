@@ -15,7 +15,10 @@ app = FastAPI(title="Citizen Helper API")
 # REQUIRED: Add CORSMiddleware to allow Frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=[
+        "http://localhost:5173", # Vite local development
+        "https://citizen-helper-app.vercel.app/" # Replace with your exact Vercel deployed url
+    ], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
