@@ -2,7 +2,6 @@ import os
 from google import genai
 
 # Reusing the provided API Key
-os.environ["GOOGLE_API_KEY"] = "AIzaSyAOy-oxZH4HNmiHcy7VDz8XxtEE2VATBHA" 
 
 def list_gemma_models():
     """ 
