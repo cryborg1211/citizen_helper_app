@@ -48,10 +48,9 @@ def initialize_cloud_brain():
     logging.info("Connecting to Pinecone Vector DB and Gemini API...")
     
     # 1. Initialize Embeddings (runs on CPU)
-    embeddings = HuggingFaceEmbeddings(
-        model_name="huyydangg/DEk21_hcmute_embedding",
-        model_kwargs={'device': 'cpu'},
-        huggingfacehub_api_token=os.environ.get("HF_TOKEN") 
+    embeddings = HuggingFaceEndpointEmbeddings(
+        model="huyydangg/DEk21_hcmute_embedding",
+        huggingfacehub_api_token=os.environ.get("HF_TOKEN")
     )
 
     # 2. Establish Pinecone connection for retrieval
