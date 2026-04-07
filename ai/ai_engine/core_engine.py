@@ -50,7 +50,7 @@ def initialize_cloud_brain():
     # 1. Initialize Embeddings (runs on CPU)
     embeddings = HuggingFaceEmbeddings(
         model_name="huyydangg/DEk21_hcmute_embedding",
-        model_kwargs={'device': 'cpu'}
+        model_kwargs={'device': 'cpu'},
         huggingfacehub_api_token=os.environ.get("HF_TOKEN") 
     )
 
