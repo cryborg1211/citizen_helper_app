@@ -6,6 +6,8 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_pinecone import PineconeVectorStore
 from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
+from langchain_huggingface import HuggingFaceEndpointEmbeddings
+
 
 load_dotenv()
 
@@ -43,13 +45,14 @@ def initialize_cloud_brain():
     Initializes Cloud-based services (Pinecone & Gemini). 
     Optimized for low-latency memory usage by offloading to managed services.
     """
-    logging.info("Connecting to Pinecone Vector DB and Gemma 4 API...")
+    logging.info("Connecting to Pinecone Vector DB and Gemini API...")
     
     # 1. Initialize Embeddings (runs on CPU)
     embeddings = HuggingFaceEmbeddings(
         model_name="huyydangg/DEk21_hcmute_embedding",
         model_kwargs={'device': 'cpu'}
-    ) 
+        huggingfacehub_api_token=os.environ.get("HF_TOKEN") 
+    )
 
     # 2. Establish Pinecone connection for retrieval
     vector_db = PineconeVectorStore(index_name=INDEX_NAME, embedding=embeddings)
