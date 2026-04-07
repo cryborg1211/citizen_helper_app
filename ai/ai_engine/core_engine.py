@@ -2,9 +2,6 @@ import os
 import time
 import re
 import logging
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_pinecone import PineconeVectorStore
-from langchain_google_genai import ChatGoogleGenerativeAI
 from dotenv import load_dotenv
 from langchain_huggingface import HuggingFaceEndpointEmbeddings
 
@@ -46,6 +43,9 @@ def initialize_cloud_brain():
     Optimized for low-latency memory usage by offloading to managed services.
     """
     logging.info("Connecting to Pinecone Vector DB and Gemini API...")
+    from langchain_huggingface import HuggingFaceEndpointEmbeddings
+    from langchain_pinecone import PineconeVectorStore
+    from langchain_google_genai import ChatGoogleGenerativeAI
 
     # Explicit Environment Variable Validation
     required_keys = ["HF_TOKEN", "PINECONE_API_KEY", "GOOGLE_API_KEY"]
@@ -75,7 +75,7 @@ def initialize_cloud_brain():
 
 def generate_response(user_query: str, retriever, llm) -> str:
     start_time = time.time()
-
+    
     # 1. MULTI-QUERY EXPANSION
     # Enhances retrieval coverage by generating multiple search variations.
     normalized_query = normalize_query(user_query)
@@ -131,17 +131,4 @@ CÂU HỎI: {user_query}"""
     return answer
 
 if __name__ == "__main__":
-    logging.info("--- CITIZEN HELPER SYSTEM BOOTING (CLOUD MODE) ---")
-    
-    try:
-        retriever, llm = initialize_cloud_brain()
-
-        logging.info("System ready. Running Multi-hop Reasoning Test...")
-        test_query = "Tôi làm thủ tục xin cấp mới hộ chiếu phổ thông qua mạng (trực tuyến) vào tháng 6 năm 2025 thì phải nộp chính xác bao nhiêu tiền lệ phí?"
-        
-        response = generate_response(test_query, retriever, llm)
-        
-        print(f"\n{'='*70}\n[USER QUERY]: {test_query}\n{'-'*70}\n[RESPONSE]:\n{response}\n{'='*70}")
-
-    except Exception as e:
-        logging.error(f"System execution failed: {e}")
+    pass 
