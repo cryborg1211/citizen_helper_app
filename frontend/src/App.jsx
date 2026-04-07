@@ -41,7 +41,7 @@ export default function App() {
 
     try {
       // POST request to the local backend AI endpoint
-      const response = await fetch('https://citizen-helper-api.onrender.com', {
+      const response = await fetch("https://citizen-helper-api.onrender.com/api/chat", {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
