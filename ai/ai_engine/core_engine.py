@@ -100,7 +100,7 @@ Bước 1: Tìm quy định gốc (Mức phí/mức phạt cơ bản).
 Bước 2: Đối chiếu điều kiện (thời gian, hình thức nộp online/offline, đối tượng) để tìm các quy định giảm trừ, ngoại lệ trong ngữ cảnh.
 Bước 3: Thực hiện tính toán từng bước (nếu có) và đưa ra kết luận con số cuối cùng.
 
-LƯU Ý TỐI THƯỢNG:
+LƯU Ý QUAN TRỌNG:
 - Trình bày rõ ràng, mạch lạc, dễ hiểu.
 - Tuyệt đối không tự suy diễn số liệu nếu ngữ cảnh không có.
 - Bắt buộc trích dẫn rõ (Tài liệu, Điều, Khoản).
